@@ -1,0 +1,20 @@
+D:\Projects\CompareDocs\build\SYLFAEN.TTF
+D:\Projects\CompareDocs\build\help.chm
+D:\Projects\CompareDocs\build\Source.docx
+D:\Projects\CompareDocs\build\Target.docx
+D:\Projects\CompareDocs\build\CompareDocs.Demo.exe.config
+D:\Projects\CompareDocs\build\CompareDocs.Demo.exe
+D:\Projects\CompareDocs\build\CompareDocs.Demo.pdb
+D:\Projects\CompareDocs\CompareDocs.Demo\obj\Debug\CompareDocs.Demo.csprojResolveAssemblyReference.cache
+D:\Projects\CompareDocs\CompareDocs.Demo\obj\Debug\CompareDocs.Demo.exe
+D:\Projects\CompareDocs\CompareDocs.Demo\obj\Debug\CompareDocs.Demo.pdb
+D:\Projects\Compare Docs\build\SYLFAEN.TTF
+D:\Projects\Compare Docs\build\help.chm
+D:\Projects\Compare Docs\build\Source.docx
+D:\Projects\Compare Docs\build\Target.docx
+D:\Projects\Compare Docs\build\CompareDocs.Demo.exe.config
+D:\Projects\Compare Docs\build\CompareDocs.Demo.exe
+D:\Projects\Compare Docs\build\CompareDocs.Demo.pdb
+D:\Projects\Compare Docs\CompareDocs.Demo\obj\Debug\CompareDocs.Demo.csprojResolveAssemblyReference.cache
+D:\Projects\Compare Docs\CompareDocs.Demo\obj\Debug\CompareDocs.Demo.exe
+D:\Projects\Compare Docs\CompareDocs.Demo\obj\Debug\CompareDocs.Demo.pdb

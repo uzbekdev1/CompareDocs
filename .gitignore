@@ -1,0 +1,7 @@
+/build
+/CompareDocs.Setup/Release
+/CompareDocs/obj
+/CompareDocs/bin
+/CompareDocs.GUI/obj
+/CompareDocs.GUI/bin
+/tmp
