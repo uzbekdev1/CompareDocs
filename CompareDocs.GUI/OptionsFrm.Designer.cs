@@ -63,7 +63,7 @@
             this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnSave.Location = new System.Drawing.Point(476, 80);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(105, 32);
+            this.btnSave.Size = new System.Drawing.Size(105, 27);
             this.btnSave.TabIndex = 3;
             this.btnSave.Text = "Saqlash";
             this.btnSave.UseVisualStyleBackColor = true;

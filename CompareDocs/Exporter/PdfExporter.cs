@@ -4,6 +4,7 @@ using System.IO;
 using CompareDocs.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using System.Linq;
 
 namespace CompareDocs.Exporter
 {
@@ -16,6 +17,7 @@ namespace CompareDocs.Exporter
             using (var document = new Document(PageSize.A4, 20f, 20f, 20f, 20f))
             {
                 var sylfaenpath = Environment.CurrentDirectory + "\\SYLFAEN.TTF";
+                var emptyLine = "________________________________________";
 
                 FontFactory.Register(sylfaenpath);
                 PdfWriter.GetInstance(document, new FileStream(filePath, FileMode.Create));
@@ -51,7 +53,7 @@ namespace CompareDocs.Exporter
                 document.Add(new Paragraph(Environment.NewLine, normal));
 
                 document.Add(new Paragraph(Environment.NewLine, normal));
-                document.Add(new Paragraph("Диссертация мавзуси:", normal));
+                document.Add(new Paragraph("Диссертация мавзуси:" + emptyLine, normal));
                 document.Add(new Paragraph(Environment.NewLine, normal));
 
                 var table = new PdfPTable(3);
@@ -92,17 +94,17 @@ namespace CompareDocs.Exporter
                 document.Add(new Paragraph(Environment.NewLine, normal));
 
                 document.Add(new Paragraph(Environment.NewLine, normal));
-                document.Add(new Paragraph("Магистратура факультетлари декани:", normal));
+                document.Add(new Paragraph("Магистратура факультетлари декани:" + emptyLine, normal));
                 document.Add(new Paragraph(Environment.NewLine, normal));
 
                 document.Add(new Paragraph(Environment.NewLine, normal));
-                document.Add(new Paragraph("Ахборот-ресурс маркази бошлиги:", normal));
+                document.Add(new Paragraph("Ахборот-ресурс маркази бошлиги:" + emptyLine, normal));
                 document.Add(new Paragraph(Environment.NewLine, normal));
 
                 document.Add(new Paragraph(Environment.NewLine, normal));
                 document.Add(new Paragraph("Магистратура факультетлари деканатининг", normal));
                 document.Add(new Paragraph(Environment.NewLine, normal));
-                document.Add(new Paragraph("маркетинг бўйича катта инспектори:", normal));
+                document.Add(new Paragraph("маркетинг бўйича катта инспектори:" + emptyLine, normal));
 
 
                 document.Close();

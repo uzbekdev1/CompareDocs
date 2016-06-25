@@ -46,7 +46,7 @@
             this.textBox1.Location = new System.Drawing.Point(12, 6);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(644, 26);
+            this.textBox1.Size = new System.Drawing.Size(614, 26);
             this.textBox1.TabIndex = 4;
             // 
             // listView1
@@ -94,9 +94,9 @@
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button2.Location = new System.Drawing.Point(662, 411);
+            this.button2.Location = new System.Drawing.Point(632, 406);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 26);
+            this.button2.Size = new System.Drawing.Size(105, 27);
             this.button2.TabIndex = 7;
             this.button2.Text = "Saqlash";
             this.button2.UseVisualStyleBackColor = true;
@@ -108,7 +108,7 @@
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button3.Location = new System.Drawing.Point(12, 411);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 26);
+            this.button3.Size = new System.Drawing.Size(105, 27);
             this.button3.TabIndex = 7;
             this.button3.Text = "Printer";
             this.button3.UseVisualStyleBackColor = true;
@@ -127,12 +127,12 @@
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button1.Location = new System.Drawing.Point(662, 6);
+            this.button1.Location = new System.Drawing.Point(632, 5);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 26);
-            this.button1.TabIndex = 7;
+            this.button1.Size = new System.Drawing.Size(105, 27);
+            this.button1.TabIndex = 9;
             this.button1.Text = "Tanlash...";
-            this.button1.UseVisualStyleBackColor = false;
+            this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // CompareFrm
@@ -140,9 +140,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(749, 487);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button3);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.listView1);

@@ -8,6 +8,7 @@ using Novacode;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace CompareDocs.Comparer
 {
@@ -31,75 +32,80 @@ namespace CompareDocs.Comparer
         {
             var filePath = Helpers.GetTempFile(_sourceFilePath);
             var stopWatch = new Stopwatch();
+            var formatting = new Formatting
+            {
+                Bold = true,
+                FontColor = Color.Red
+            };
 
             stopWatch.Start();
 
             File.Copy(_sourceFilePath, filePath, true);
 
+            var totalSourceChunks = new List<string>();
             using (var sourceDoc = DocX.Load(filePath))
             {
                 var sourceParagraphs = sourceDoc.Paragraphs.Where(w => !string.IsNullOrWhiteSpace(w.Text));
 
-                using (var targetDoc = DocX.Load(_targetFilePath))
+                foreach (var sourceParagraph in sourceParagraphs)
                 {
+                    var sourcePhrases = sourceParagraph.Text.ToSplit(".");
+                    var sourceChunks = sourcePhrases.SelectMany(s => s.ToSplit(Helpers.Options.EXCLUDE_CHARACTERS));
 
-                    var targetParagraphs = targetDoc.Paragraphs.Where(w => !string.IsNullOrWhiteSpace(w.Text));
-
-                    _total = targetParagraphs.Sum(s => s.Text.Length);
-
-                    foreach (var sourceParagraph in sourceParagraphs)
-                    {
-                        var sourcePhrases = sourceParagraph.Text.ToSplit(".");
-                         
-                        foreach (var targetParagraph in targetParagraphs)
-                        {
-                            var targetPhrases = targetParagraph.Text.ToSplit(".");
-                            var formatting = new Formatting
-                            {
-                                Bold = true,
-                                FontColor = Color.Red
-                            };
-
-                            foreach (var sourcePhrase in sourcePhrases)
-                            {
-                                var sourceChunks = sourcePhrase.ToSplit(Helpers.Options.EXCLUDE_CHARACTERS);
-
-                                foreach (var targetPhrase in targetPhrases)
-                                {
-                                    var targetChunks = targetPhrase.ToSplit(Helpers.Options.EXCLUDE_CHARACTERS);
-
-                                    if (!sourceChunks.SequenceEqual(targetChunks, StringComparer.OrdinalIgnoreCase))
-                                        continue;
-
-                                    for (var i = 0; i < targetChunks.Length; i++)
-                                    {
-                                        if (string.CompareOrdinal(targetChunks[i], sourceChunks[i]) == 0)
-                                        {
-                                            try
-                                            {
-                                                sourceParagraph.ReplaceText
-                                                (
-                                                    sourceChunks[i],
-                                                    sourceChunks[i],
-                                                    false,
-                                                    RegexOptions.IgnoreCase,
-                                                    formatting,
-                                                    null,
-                                                    MatchFormattingOptions.ExactMatch
-                                                );
-                                            }
-                                            catch (Exception)
-                                            {
-                                            }
-
-                                            _exists += targetChunks[i].Length;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    totalSourceChunks.AddRange(sourceChunks);
                 }
+
+            }
+
+            var totalTargetChunks = new List<string>();
+            using (var targetDoc = DocX.Load(_targetFilePath))
+            {
+                var targetParagraphs = targetDoc.Paragraphs.Where(w => !string.IsNullOrWhiteSpace(w.Text));
+
+                _total = targetParagraphs.Sum(s => s.Text.Length);
+
+                foreach (var targetParagraph in targetParagraphs)
+                {
+                    var targetPhrases = targetParagraph.Text.ToSplit(".");
+                    var targetChunks = targetPhrases.SelectMany(s => s.ToSplit(Helpers.Options.EXCLUDE_CHARACTERS));
+
+                    totalTargetChunks.AddRange(targetChunks);
+                }
+            }
+
+            using (var sourceDoc = DocX.Load(filePath))
+            {
+                var exists = totalTargetChunks.FindAll(f => totalSourceChunks.Exists(e => string.CompareOrdinal(f, e) == 0));
+
+                Partitioner.Create(0, exists.Count, Environment.ProcessorCount)
+                    .AsParallel()
+                    .WithDegreeOfParallelism(Environment.ProcessorCount)
+                    .WithExecutionMode(ParallelExecutionMode.ForceParallelism)
+                    .WithMergeOptions(ParallelMergeOptions.FullyBuffered)
+                    .ForAll(tuple =>
+                    {
+                        for (var index = tuple.Item1; index < tuple.Item2; index++)
+                        {
+                            try
+                            {
+                                sourceDoc.ReplaceText
+                                (
+                                    exists[index],
+                                    exists[index],
+                                    false,
+                                    RegexOptions.IgnoreCase,
+                                    formatting,
+                                    null,
+                                    MatchFormattingOptions.ExactMatch
+                                );
+                            }
+                            catch (Exception)
+                            {
+                            }
+
+                            _exists += exists[index].Length;
+                        }
+                    });
 
                 sourceDoc.Save();
             }

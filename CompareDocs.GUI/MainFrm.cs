@@ -35,6 +35,9 @@ namespace CompareDocs.GUI
 
         private void searchToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.DataDrectory))
+                return;
+
             new SearchFrm().Show();
         }
 
