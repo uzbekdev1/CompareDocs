@@ -35,7 +35,7 @@ namespace CompareDocs.Extensions
         public static string GetTempFile(string file)
         {
             return Path.Combine(Path.GetTempPath(), Path.GetFileName(file));
-        }
-         
+        } 
+
     }
 }
