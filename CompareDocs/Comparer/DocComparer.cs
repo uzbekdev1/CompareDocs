@@ -11,7 +11,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using DocumentFormat.OpenXml.Packaging;
-using CompareDocs.GPU;
+using OpenXmlPowerTools;
 
 namespace CompareDocs.Comparer
 {
@@ -19,6 +19,8 @@ namespace CompareDocs.Comparer
     {
         private readonly string _sourceFilePath;
         private readonly string _targetFilePath;
+        private int _exists;
+        private int _total;
 
         public DocComparer(string source, string target)
         {
@@ -33,8 +35,6 @@ namespace CompareDocs.Comparer
         {
             var filePath = Helpers.GetTempFile(_sourceFilePath);
             var stopWatch = new Stopwatch();
-            var existItems = 0;
-            var totalItems = 0;
 
             stopWatch.Start();
 
@@ -60,7 +60,7 @@ namespace CompareDocs.Comparer
             {
                 var targetParagraphs = targetDoc.Paragraphs.Where(w => !string.IsNullOrWhiteSpace(w.Text));
 
-                totalItems = targetParagraphs.Sum(s => s.Text.Length);
+                _total = targetParagraphs.Sum(s => s.Text.Length);
 
                 foreach (var targetParagraph in targetParagraphs)
                 {
@@ -72,22 +72,55 @@ namespace CompareDocs.Comparer
             }
 
             var exists = totalTargetChunks.FindAll(f => totalSourceChunks.Exists(e => string.CompareOrdinal(f, e) == 0));
-
-            NVideoManager.N = exists.Count;
-
             using (var sourceDoc = DocX.Load(filePath))
             {
-                NVideoManager.Doc = sourceDoc;
+                var formatting = new Formatting
+                {
+                    Bold = true,
+                    FontColor = Color.Red
+                };
 
-                existItems = NVideoManager.Execute(exists);
+                foreach (var exist in exists)
+                {
+                    try
+                    {
+                        sourceDoc.ReplaceText(exist, exist, false, RegexOptions.IgnoreCase, formatting, null, MatchFormattingOptions.ExactMatch);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    _exists += exist.Length;
+                }
+
+                sourceDoc.Save();
+            }
+
+            using (var doc = WordprocessingDocument.Open(_sourceFilePath, true, new OpenSettings
+            {
+                AutoSave = true,
+                MarkupCompatibilityProcessSettings =
+                {
+                    ProcessMode = MarkupCompatibilityProcessMode.ProcessAllParts,
+                    TargetFileFormatVersions = DocumentFormat.OpenXml.FileFormatVersions.Office2007
+                }
+            }))
+            {
+                Parallel.ForEach(exists, new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = Environment.ProcessorCount
+                }, existItem =>
+                {
+                   TextReplacer.SearchAndReplace(doc, existItem, existItem, true);
+                });
             }
 
             stopWatch.Stop();
 
-            ElapsedTime = string.Format("{0}:{1}:{2}", stopWatch.Elapsed.Hours.ToString("00"), stopWatch.Elapsed.Minutes.ToString("00"), stopWatch.Elapsed.Seconds.ToString("00"));
+            ElapsedTime = string.Format("{0}:{1}:{2}", stopWatch.Elapsed.Hours.ToString("00"),
+                stopWatch.Elapsed.Minutes.ToString("00"), stopWatch.Elapsed.Seconds.ToString("00"));
             ComparedFile = filePath;
 
-            return existItems * 1F / totalItems;
+            return _exists * 1F / _total;
         }
     }
 }
