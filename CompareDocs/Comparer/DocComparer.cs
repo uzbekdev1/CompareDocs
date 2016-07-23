@@ -72,42 +72,16 @@ namespace CompareDocs.Comparer
             }
 
             var exists = totalTargetChunks.FindAll(f => totalSourceChunks.Exists(e => string.CompareOrdinal(f, e) == 0));
-            using (var sourceDoc = DocX.Load(filePath))
-            {
-                var formatting = new Formatting
-                {
-                    Bold = true,
-                    FontColor = Color.Red
-                };
-
-                foreach (var exist in exists)
-                {
-                    try
-                    {
-                        sourceDoc.ReplaceText(exist, exist, false, RegexOptions.IgnoreCase, formatting, null, MatchFormattingOptions.ExactMatch);
-                    }
-                    catch (Exception)
-                    {
-                    }
-                    _exists += exist.Length;
-                }
-
-                sourceDoc.Save();
-            }
 
             using (var doc = WordprocessingDocument.Open(_sourceFilePath, true, new OpenSettings
             {
-                AutoSave = true,
-                MarkupCompatibilityProcessSettings = new MarkupCompatibilityProcessSettings(MarkupCompatibilityProcessMode.ProcessAllParts, DocumentFormat.OpenXml.FileFormatVersions.Office2007)
+                AutoSave = true
             }))
             {
-                Parallel.ForEach(exists, new ParallelOptions
+                foreach (var exist in exists)
                 {
-                    MaxDegreeOfParallelism = Environment.ProcessorCount
-                }, existItem =>
-                {
-                    TextReplacer.SearchAndReplace(doc, existItem, existItem, true);
-                });
+                    TextReplacer.SearchAndReplace(doc, exist, exist, true);
+                }
             }
 
             stopWatch.Stop();

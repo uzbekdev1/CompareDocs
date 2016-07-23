@@ -86,7 +86,8 @@ namespace OpenXmlPowerTools
                                 replace, matchCase)));
                         XElement[] subRunArray = paragraphWithSplitRuns
                             .Elements(W.r)
-                            .Where(e => {
+                            .Where(e =>
+                            {
                                 XElement subRunElement = e.Elements().FirstOrDefault(el => el.Name != W.rPr);
                                 if (subRunElement == null)
                                     return false;
@@ -105,7 +106,8 @@ namespace OpenXmlPowerTools
                                 ParagraphChildProjection = pcp,
                                 CharacterToCompare = c,
                             });
-                            bool dontMatch = zipped.Any(z => {
+                            bool dontMatch = zipped.Any(z =>
+                            {
                                 if (z.ParagraphChildProjection.Annotation<MatchSemaphore>() != null)
                                     return true;
                                 bool b;
@@ -130,7 +132,8 @@ namespace OpenXmlPowerTools
                         {
                             List<XElement> elementsToReplace = paragraphWithReplacedRuns
                                 .Elements()
-                                .Where(e => {
+                                .Where(e =>
+                                {
                                     var sem = e.Annotation<MatchSemaphore>();
                                     if (sem == null)
                                         return false;
@@ -140,7 +143,7 @@ namespace OpenXmlPowerTools
                             elementsToReplace.First().AddBeforeSelf(
                                 new XElement(W.r,
                                     elementsToReplace.First().Elements(W.rPr),
-                                    new XElement(W.t, replace)));
+                                    new XElement(W.t, replace), new XElement(W.color, "CC0000")));
                             elementsToReplace.Remove();
                         }
                         var groupedAdjacentRunsWithIdenticalFormatting =
@@ -218,6 +221,7 @@ namespace OpenXmlPowerTools
         {
             XElement newRoot = (XElement)WmlSearchAndReplaceTransform(xDocument.Root,
                 search, replace, matchCase);
+
             xDocument.Elements().First().ReplaceWith(newRoot);
         }
 
