@@ -98,11 +98,7 @@ namespace CompareDocs.Comparer
             using (var doc = WordprocessingDocument.Open(_sourceFilePath, true, new OpenSettings
             {
                 AutoSave = true,
-                MarkupCompatibilityProcessSettings =
-                {
-                    ProcessMode = MarkupCompatibilityProcessMode.ProcessAllParts,
-                    TargetFileFormatVersions = DocumentFormat.OpenXml.FileFormatVersions.Office2007
-                }
+                MarkupCompatibilityProcessSettings = new MarkupCompatibilityProcessSettings(MarkupCompatibilityProcessMode.ProcessAllParts, DocumentFormat.OpenXml.FileFormatVersions.Office2007)
             }))
             {
                 Parallel.ForEach(exists, new ParallelOptions
@@ -110,7 +106,7 @@ namespace CompareDocs.Comparer
                     MaxDegreeOfParallelism = Environment.ProcessorCount
                 }, existItem =>
                 {
-                   TextReplacer.SearchAndReplace(doc, existItem, existItem, true);
+                    TextReplacer.SearchAndReplace(doc, existItem, existItem, true);
                 });
             }
 
